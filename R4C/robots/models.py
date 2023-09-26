@@ -1,23 +1,47 @@
 from django.db import models
 
+from .validators import validate_length
 
-class Robot(models.Model):
-    serial = models.CharField(
-        max_length=5,
-        blank=False,
-        null=False
-    )
-    model = models.CharField(
+
+class RobotModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(
         max_length=2,
         blank=False,
-        null=False
+        null=False,
+        validators=[validate_length]
+    )
+
+
+class Robot(models.Model):
+    id = models.AutoField(
+        primary_key=True,
+        default=1
+    )
+    model = models.ForeignKey(
+        RobotModel,
+        on_delete=models.CASCADE
     )
     version = models.CharField(
         max_length=2,
         blank=False,
-        null=False
+        null=False,
+        validators=[validate_length]
     )
     created = models.DateTimeField(
         blank=False,
         null=False
     )
+    serial = models.CharField(
+        max_length=6,
+        blank=True,
+        null=False,
+        unique=True
+    )
+
+    def save(self, *args, **kwargs):
+        """
+        Генерируем значение для поля 'serial' на основе 'model' и 'version'.
+        """
+        self.serial = f"{self.model}-{self.version}"
+        super(Robot, self).save(*args, **kwargs)
