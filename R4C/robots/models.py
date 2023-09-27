@@ -7,10 +7,14 @@ class RobotModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(
         max_length=2,
+        unique=True,
         blank=False,
         null=False,
         validators=[validate_length]
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Robot(models.Model):
@@ -35,13 +39,12 @@ class Robot(models.Model):
     serial = models.CharField(
         max_length=6,
         blank=True,
-        null=False,
-        unique=True
+        null=False
     )
 
     def save(self, *args, **kwargs):
         """
         Генерируем значение для поля 'serial' на основе 'model' и 'version'.
         """
-        self.serial = f"{self.model}-{self.version}"
+        self.serial = f"{self.model.name}-{self.version}"
         super(Robot, self).save(*args, **kwargs)

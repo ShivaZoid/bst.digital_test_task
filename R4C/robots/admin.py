@@ -13,6 +13,7 @@ class RobotModelAdmin(admin.ModelAdmin):
 
     list_display = (
         'name',
+        'id',
     )
     empty_value_display = '-пусто-'
 
@@ -34,6 +35,6 @@ class RobotAdmin(admin.ModelAdmin):
         'created',
         'serial',
     )
-    search_fields = ('robot_id', 'serial',)
+    search_fields = ('id', 'serial',)
     list_filter = ('model', 'version',)
     empty_value_display = '-пусто-'
